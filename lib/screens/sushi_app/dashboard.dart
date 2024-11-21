@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_course_batch_2/models/food.dart';
+import 'package:flutter_course_batch_2/provider/cart.dart';
+import 'package:flutter_course_batch_2/screens/sushi_app/cart_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/detail_screen.dart';
+import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -36,6 +39,10 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  void goToCart() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen()));
   }
 
   @override
@@ -87,38 +94,42 @@ class _DashboardState extends State<Dashboard> {
               size: 30,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Stack(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    CupertinoIcons.bag,
-                    size: 30,
-                  ),
-                ),
-                Visibility(
-                  visible: false,
-                  child: Positioned(
-                    top: 2,
-                    right: 2,
-                    child: CircleAvatar(
-                      radius: 10,
-                      backgroundColor: Colors.red,
-                      child: Text(
-                        '10',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                        ),
+          Consumer<Cart>(
+            builder: (context, value, child) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        goToCart();
+                      },
+                      icon: Icon(
+                        CupertinoIcons.bag,
+                        size: 30,
                       ),
                     ),
-                  ),
-                )
-              ],
-            ),
-          ),
+                    Visibility(
+                      visible: value.cart.isNotEmpty ? true : false,
+                      child: CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.yellow,
+                        child: Center(
+                          child: Text(
+                            value.cart.length.toString(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          )
         ],
       ),
       body: Column(
@@ -243,41 +254,46 @@ class _DashboardState extends State<Dashboard> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Container(
-            height: 200,
-            width: MediaQuery.sizeOf(context).width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              image: DecorationImage(
-                image: AssetImage(foods[2].imagePath.toString()),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.2),
-                  BlendMode.darken,
+          GestureDetector(
+            onTap: () {
+              goToDetailFood(2);
+            },
+            child: Container(
+              height: 200,
+              width: MediaQuery.sizeOf(context).width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: AssetImage(foods[2].imagePath.toString()),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.2),
+                    BlendMode.darken,
+                  ),
                 ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ListTile(
-                  title: Text(
-                    foods[2].name.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.bold,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ListTile(
+                    title: Text(
+                      foods[2].name.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 34,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  subtitle: Text(
-                    '${foods[2].price} IDR',
-                    style: TextStyle(
-                      color: Colors.yellowAccent,
-                      fontSize: 28,
+                    subtitle: Text(
+                      '${foods[2].price} IDR',
+                      style: TextStyle(
+                        color: Colors.yellowAccent,
+                        fontSize: 28,
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ],
