@@ -42,7 +42,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getDataStorage();
+      Future.delayed(Duration(seconds: 3), () {
+        _getDataStorage();
+      });
     });
     super.initState();
   }

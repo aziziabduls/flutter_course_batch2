@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_course_batch_2/models/food.dart';
 import 'package:flutter_course_batch_2/provider/cart_provider.dart';
+import 'package:flutter_course_batch_2/screens/sushi_app/account_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/cart_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/detail_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/search_screen.dart';
@@ -100,59 +101,70 @@ class _DashboardState extends State<Dashboard> {
           ),
           Consumer<CartProvider>(
             builder: (context, value, child) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 14, left: 10),
-                child: Stack(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        goToCart();
-                      },
-                      icon: Icon(
-                        CupertinoIcons.bag,
-                        size: 30,
-                      ),
+              return Stack(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      goToCart();
+                    },
+                    icon: Icon(
+                      CupertinoIcons.bag,
+                      size: 30,
                     ),
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Visibility(
-                        visible: value.cart.isNotEmpty ? true : false,
-                        child: CircleAvatar(
-                          radius: 10,
-                          backgroundColor: Colors.yellow,
-                          child: Center(
-                            child: Text(
-                              value.cart.length.toString(),
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 10,
-                              ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Visibility(
+                      visible: value.cart.isNotEmpty ? true : false,
+                      child: CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.yellow,
+                        child: Center(
+                          child: Text(
+                            value.cart.length.toString(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 10,
                             ),
                           ),
                         ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               );
             },
-          )
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 14),
+            child: IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AccountScreen()));
+              },
+              icon: Icon(
+                CupertinoIcons.person,
+                size: 30,
+              ),
+            ),
+          ),
         ],
       ),
-      body: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // BANNER PROMO
-          bannerPromoWidget(context),
+      body: foods.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // BANNER PROMO
+                bannerPromoWidget(context),
 
-          // BEST SELLER
-          bestSellerWidget(context),
+                // BEST SELLER
+                bestSellerWidget(context),
 
-          // Popular Food
-          popularFood(),
-        ],
-      ),
+                // Popular Food
+                popularFood(),
+              ],
+            ),
     );
   }
 
