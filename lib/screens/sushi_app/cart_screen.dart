@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_course_batch_2/provider/cart.dart';
+import 'package:flutter_course_batch_2/models/cart_model.dart';
+import 'package:flutter_course_batch_2/provider/cart_provider.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/dashboard.dart';
+import 'package:flutter_course_batch_2/screens/sushi_app/payment_screen.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -14,6 +17,24 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   bool showLoader = true;
+  double price = 0;
+  double totalPrice = 0;
+  double taxAndService = 0;
+  double totalPayment = 0;
+
+  deleteItem(CartModel food) {
+    context.read<CartProvider>().deleteItemCart(food);
+    if (context.read<CartProvider>().cart.isEmpty) {
+      setState(() {
+        price = 0;
+        totalPrice = 0;
+        taxAndService = 0;
+        totalPayment = 0;
+      });
+    } else {
+      context.read<CartProvider>();
+    }
+  }
 
   @override
   void initState() {
@@ -27,17 +48,11 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double price = 0;
-    double totalPrice = 0;
-    double taxAndService = 0;
-    double totalPayment = 0;
-
-    return Consumer<Cart>(
+    return Consumer<CartProvider>(
       builder: (context, value, child) {
         for (var cartModel in value.cart) {
           price = int.parse(cartModel.quantity.toString()) * int.parse(cartModel.price.toString()).toDouble();
-          totalPrice += price;
-
+          totalPrice += double.parse(price.toString());
           taxAndService = (totalPrice * 0.11).toDouble();
           totalPayment = (totalPrice + taxAndService).toDouble();
         }
@@ -46,22 +61,25 @@ class _CartScreenState extends State<CartScreen> {
           appBar: AppBar(
             title: const Text('Cart'),
             actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  onPressed: () {
-                    value.clearCart();
-                    setState(() {
-                      price = 0;
-                      totalPrice = 0;
-                      taxAndService = 0;
-                      totalPayment = 0;
-                    });
-                  },
-                  icon: Row(
-                    children: const [
-                      Text('Clear Cart'),
-                    ],
+              Visibility(
+                visible: value.cart.isNotEmpty ? true : false,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    onPressed: () {
+                      value.clearCart();
+                      setState(() {
+                        price = 0;
+                        totalPrice = 0;
+                        taxAndService = 0;
+                        totalPayment = 0;
+                      });
+                    },
+                    icon: Row(
+                      children: const [
+                        Text('Clear Cart'),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -100,7 +118,8 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                           SizedBox(height: 10),
                           CupertinoButton(
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(50),
                             child: Text('Add Some Food'),
                             onPressed: () {
                               Navigator.pushAndRemoveUntil(
@@ -120,39 +139,48 @@ class _CartScreenState extends State<CartScreen> {
                           itemCount: value.cart.length,
                           itemBuilder: (context, index) {
                             final food = value.cart[index];
-                            return ListTile(
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Container(
-                                  color: Colors.yellow,
-                                  height: 50,
-                                  width: 50,
-                                  child: Image.asset(
-                                    food.imagePath.toString(),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              title: Text(food.nama.toString()),
-                              subtitle: Row(
+                            return Slidable(
+                              key: ValueKey(index),
+                              endActionPane: ActionPane(
+                                motion: ScrollMotion(),
                                 children: [
-                                  Text('IDR ${food.price} x ${food.quantity}'),
+                                  SlidableAction(
+                                    flex: 2,
+                                    onPressed: (context) => deleteItem(food),
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    icon: CupertinoIcons.trash,
+                                    label: 'Delete',
+                                  ),
                                 ],
                               ),
-                              trailing: IconButton(
-                                onPressed: () {
-                                  value.deleteItemCart(food);
-                                  if (value.cart.isEmpty) {
-                                    price = 0;
-                                    totalPrice = 0;
-                                    taxAndService = 0;
-                                    totalPayment = 0;
-                                    setState(() {});
-                                  } else {
-                                    context.read<Cart>();
-                                  }
-                                },
-                                icon: Icon(CupertinoIcons.trash_circle),
+                              child: ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Container(
+                                    color: Colors.yellow,
+                                    height: 50,
+                                    width: 50,
+                                    child: Image.asset(
+                                      food.imagePath.toString(),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                title: Text(
+                                  food.nama.toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                subtitle: Row(
+                                  children: [
+                                    Text(
+                                      'IDR ${food.price} x ${food.quantity}',
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           },
@@ -193,23 +221,62 @@ class _CartScreenState extends State<CartScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Price'),
-                                Text('IDR $price'),
+                                Text(
+                                  'Price',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Text(
+                                  'IDR $totalPrice',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Tax and Service'),
-                                Text('IDR $taxAndService'),
+                                Text(
+                                  'Tax and Service',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Text(
+                                  'IDR $taxAndService',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                             Divider(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Total Price'),
-                                Text('IDR $totalPayment'),
+                                Text(
+                                  'Total Price',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Text(
+                                  'IDR $totalPayment',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
@@ -219,16 +286,34 @@ class _CartScreenState extends State<CartScreen> {
                         margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
                         width: MediaQuery.of(context).size.width,
                         child: CupertinoButton(
-                          color: Theme.of(context).primaryColor,
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(50),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: const [
-                              Text('Pay Now'),
+                              Text(
+                                'Pay Now',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Urbanist',
+                                ),
+                              ),
                               SizedBox(width: 10),
                               Icon(CupertinoIcons.arrow_right),
                             ],
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PaymentScreen(
+                                  totalPayment: totalPayment.toString(),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ],

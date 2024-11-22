@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_course_batch_2/models/food.dart';
-import 'package:flutter_course_batch_2/provider/cart.dart';
+import 'package:flutter_course_batch_2/provider/cart_provider.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/cart_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +39,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void addToCart() {
     if (qtyCount > 0) {
-      final cart = context.read<Cart>();
+      final cart = context.read<CartProvider>();
       cart.addToCart(widget.food, qtyCount);
       popUpDialog();
     }
@@ -141,36 +141,43 @@ class _DetailScreenState extends State<DetailScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
-          Consumer<Cart>(
+          Consumer<CartProvider>(
             builder: (context, value, child) {
-              return Stack(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      goToCart();
-                    },
-                    icon: Icon(
-                      CupertinoIcons.bag,
-                      size: 30,
+              return Padding(
+                padding: const EdgeInsets.only(right: 14),
+                child: Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        goToCart();
+                      },
+                      icon: Icon(
+                        CupertinoIcons.bag,
+                        size: 30,
+                      ),
                     ),
-                  ),
-                  Visibility(
-                    visible: value.cart.isNotEmpty ? true : false,
-                    child: CircleAvatar(
-                      radius: 10,
-                      backgroundColor: Colors.yellow,
-                      child: Center(
-                        child: Text(
-                          value.cart.length.toString(),
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 10,
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Visibility(
+                        visible: value.cart.isNotEmpty ? true : false,
+                        child: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: Colors.yellow,
+                          child: Center(
+                            child: Text(
+                              value.cart.length.toString(),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 10,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               );
             },
           )
@@ -278,10 +285,11 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           CupertinoIcons.star_fill,
-                          size: 14,
+                          size: 20,
                           color: Colors.green,
                         ),
                         SizedBox(width: 5),
@@ -289,7 +297,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           widget.food.rating.toString(),
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 14,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -297,13 +305,6 @@ class _DetailScreenState extends State<DetailScreen> {
                     )
                   ],
                 ),
-
-                // // Icon Favorite
-                // Icon(
-                //   CupertinoIcons.heart,
-                //   size: 34,
-                //   color: Colors.red,
-                // ),
                 Row(
                   children: [
                     IconButton(
@@ -349,8 +350,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 Text(
                   widget.food.description.toString(),
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
+                    color: Colors.black45,
+                    fontSize: 20,
                   ),
                 ),
               ],

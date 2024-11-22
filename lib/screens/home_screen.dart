@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_course_batch_2/module/secure_storage_module.dart';
 import 'package:flutter_course_batch_2/screens/about_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen_without_provider.dart';
@@ -12,7 +13,15 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Course Batch 2'),
+        title: const Text(
+          'Flutter Course Batch 2',
+          style: TextStyle(
+            color: Colors.black,
+            fontFamily: 'Urbanist',
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.yellowAccent,
       ),
       body: ListView(
@@ -141,8 +150,10 @@ class HomeScreen extends StatelessWidget {
               ),
               title: Text('Sushi App'),
               trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () {
+              onTap: () async {
+                await SecureStorageModule().write(key: 'isSushiApp', value: 'true');
                 Navigator.pushAndRemoveUntil(
+                  // ignore: use_build_context_synchronously
                   context,
                   MaterialPageRoute(builder: (context) => WelcomeScreen()),
                   (route) => false,

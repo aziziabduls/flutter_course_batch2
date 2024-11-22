@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_course_batch_2/models/food.dart';
-import 'package:flutter_course_batch_2/provider/cart.dart';
+import 'package:flutter_course_batch_2/provider/cart_provider.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/cart_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/detail_screen.dart';
+import 'package:flutter_course_batch_2/screens/sushi_app/search_screen.dart';
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
@@ -65,6 +66,7 @@ class _DashboardState extends State<Dashboard> {
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 30,
+                // fontFamily: 'Poppins',
               ),
             ),
             Row(
@@ -88,16 +90,18 @@ class _DashboardState extends State<Dashboard> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
+            },
             icon: Icon(
               CupertinoIcons.search,
               size: 30,
             ),
           ),
-          Consumer<Cart>(
+          Consumer<CartProvider>(
             builder: (context, value, child) {
               return Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(right: 14, left: 10),
                 child: Stack(
                   children: [
                     IconButton(
@@ -109,17 +113,21 @@ class _DashboardState extends State<Dashboard> {
                         size: 30,
                       ),
                     ),
-                    Visibility(
-                      visible: value.cart.isNotEmpty ? true : false,
-                      child: CircleAvatar(
-                        radius: 10,
-                        backgroundColor: Colors.yellow,
-                        child: Center(
-                          child: Text(
-                            value.cart.length.toString(),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 10,
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Visibility(
+                        visible: value.cart.isNotEmpty ? true : false,
+                        child: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: Colors.yellow,
+                          child: Center(
+                            child: Text(
+                              value.cart.length.toString(),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 10,
+                              ),
                             ),
                           ),
                         ),
@@ -132,8 +140,8 @@ class _DashboardState extends State<Dashboard> {
           )
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // BANNER PROMO
           bannerPromoWidget(context),
@@ -141,102 +149,113 @@ class _DashboardState extends State<Dashboard> {
           // BEST SELLER
           bestSellerWidget(context),
 
-          SizedBox(height: 20),
-
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            child: Text(
-              'Popular Food',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: foods.length,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    goToDetailFood(index);
-                  },
-                  child: Container(
-                    color: Colors.transparent,
-                    margin: EdgeInsets.only(right: 16),
-                    height: 140,
-                    width: 140,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Hero(
-                          tag: foods[index].imagePath.toString(),
-                          child: Container(
-                            height: 120,
-                            width: 140,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                image: AssetImage(foods[index].imagePath.toString()),
-                                fit: BoxFit.cover,
-                                colorFilter: ColorFilter.mode(
-                                  Colors.black.withOpacity(0.2),
-                                  BlendMode.darken,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          foods[index].name.toString(),
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 3),
-                        Text(
-                          '${foods[index].price} IDR',
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Row(
-                          children: [
-                            Icon(
-                              CupertinoIcons.star_fill,
-                              size: 14,
-                              color: Colors.green,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              foods[index].rating.toString(),
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          // Popular Food
+          popularFood(),
         ],
       ),
+    );
+  }
+
+  popularFood() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+          child: Text(
+            'Popular Food',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+        SizedBox(
+          height: 300,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: foods.length,
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  goToDetailFood(index);
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  margin: EdgeInsets.only(right: 16),
+                  height: 140,
+                  width: 140,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Hero(
+                        tag: foods[index].imagePath.toString(),
+                        child: Container(
+                          height: 120,
+                          width: 140,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                              image: AssetImage(foods[index].imagePath.toString()),
+                              fit: BoxFit.cover,
+                              colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.2),
+                                BlendMode.darken,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        foods[index].name.toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 3),
+                      Text(
+                        '${foods[index].price} IDR',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.star_fill,
+                            size: 14,
+                            color: Colors.green,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            foods[index].rating.toString(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -254,6 +273,7 @@ class _DashboardState extends State<Dashboard> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          SizedBox(height: 10),
           GestureDetector(
             onTap: () {
               goToDetailFood(2);

@@ -70,6 +70,7 @@ class WelcomeScreen extends StatelessWidget {
                           'Get Started',
                           style: TextStyle(
                             fontSize: 24,
+                            fontFamily: 'Urbanist',
                           ),
                         ),
                         SizedBox(width: 10),

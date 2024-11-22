@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_course_batch_2/models/cart_model.dart';
 import 'package:flutter_course_batch_2/models/food.dart';
 
-class Cart extends ChangeNotifier {
+class CartProvider extends ChangeNotifier {
   final List<CartModel> _cart = [];
   List<CartModel> get cart => _cart;
 
