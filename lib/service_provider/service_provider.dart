@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course_batch_2/main.dart';
 import 'package:flutter_course_batch_2/models/category_model.dart';
 import 'package:flutter_course_batch_2/service_provider/dio_client.dart';
+import 'package:flutter_course_batch_2/service_provider/error_notifier.dart';
+import 'package:provider/provider.dart';
 
 class ServiceProvider with ChangeNotifier {
-  final DioClient dioClient;
   ServiceProvider(this.dioClient);
+
+  final errorNotifier = Provider.of<ErrorNotifier>(navigatorKey.currentContext!, listen: false);
+
+  // Client
+  final DioClient dioClient;
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -24,7 +31,7 @@ class ServiceProvider with ChangeNotifier {
     try {
       _categories = await dioClient.fetchCategories();
     } catch (error) {
-      _errorMessage = error.toString();
+      _errorMessage = errorNotifier.errorMessage!;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -42,7 +49,7 @@ class ServiceProvider with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       _isLoading = false;
-      _errorMessage = error.toString();
+      _errorMessage = 'Deletion data unsuccessfull';
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -64,7 +71,8 @@ class ServiceProvider with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       _isLoading = false;
-      _errorMessage = error.toString();
+      // _errorMessage = errorNotifier.errorMessage;
+      _errorMessage = 'Failed to create new category';
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -1,23 +1,23 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_course_batch_2/main.dart';
 import 'package:flutter_course_batch_2/models/category_model.dart';
 import 'package:flutter_course_batch_2/service_provider/error_notifier.dart';
 import 'package:provider/provider.dart';
 
 class DioClient {
-  final Dio _dio;
+  final Dio _dioClient;
 
-  DioClient(this._dio) {
-    _dio.options = BaseOptions(
+  DioClient(this._dioClient) {
+    // Category Client
+    _dioClient.options = BaseOptions(
       baseUrl: 'https://api.escuelajs.co/api/v1',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
     );
 
-    _dio.interceptors.add(InterceptorsWrapper(
+    _dioClient.interceptors.add(InterceptorsWrapper(
       onError: (DioError e, handler) {
         String errorMessage;
         switch (e.type) {
@@ -39,7 +39,7 @@ class DioClient {
         errorNotifier.setErrorMessage(errorMessage);
 
         // Show the alert dialog
-        _showErrorAlert(errorMessage);
+        // _showErrorAlert(errorMessage);
 
         // Pass the error forward
         return handler.next(e);
@@ -47,27 +47,27 @@ class DioClient {
     ));
   }
 
-  Future<void> _showErrorAlert(String message) async {
-    if (navigatorKey.currentContext != null) {
-      showDialog(
-        context: navigatorKey.currentContext!,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
+  // Future<void> _showErrorAlert(String message) async {
+  //   if (navigatorKey.currentContext != null) {
+  //     showDialog(
+  //       context: navigatorKey.currentContext!,
+  //       builder: (context) => AlertDialog(
+  //         title: const Text('Error'),
+  //         content: Text(message),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             child: const Text('OK'),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  // }
 
   Future<List<Category>> fetchCategories() async {
     try {
-      final response = await _dio.get('/categories');
+      final response = await _dioClient.get('/categories');
       return (response.data as List).map((json) => Category.fromJson(json)).toList();
     } catch (e) {
       rethrow;
@@ -76,7 +76,7 @@ class DioClient {
 
   Future<void> deleteCategory(int id) async {
     try {
-      await _dio.delete('/categories/$id');
+      await _dioClient.delete('/categories/$id');
     } catch (e) {
       rethrow;
     }
@@ -84,7 +84,7 @@ class DioClient {
 
   Future<Map<String, dynamic>> createCategory(String name, String imageUrl) async {
     try {
-      final response = await _dio.post('/categories', data: {
+      final response = await _dioClient.post('/categories', data: {
         "name": name,
         "image": imageUrl,
       });

@@ -142,6 +142,7 @@ class _CartScreenState extends State<CartScreen> {
                             return Slidable(
                               key: ValueKey(index),
                               endActionPane: ActionPane(
+                                extentRatio: 0.25,
                                 motion: ScrollMotion(),
                                 children: [
                                   SlidableAction(

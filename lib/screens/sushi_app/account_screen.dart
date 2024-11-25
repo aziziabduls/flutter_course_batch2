@@ -33,6 +33,8 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
           Spacer(),
           CupertinoButton(
+            color: Colors.blueGrey,
+            borderRadius: BorderRadius.circular(30),
             child: Text('Logout'),
             onPressed: () async {
               await SecureStorageModule().write(key: 'isSushiApp', value: 'false').then((value) {
@@ -46,6 +48,7 @@ class _AccountScreenState extends State<AccountScreen> {
               debugPrint('>>> hasil : $isSushiApp');
             },
           ),
+          SizedBox(height: 20),
         ],
       ),
     );

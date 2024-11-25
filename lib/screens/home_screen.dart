@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_course_batch_2/module/secure_storage_module.dart';
 import 'package:flutter_course_batch_2/screens/about_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen_without_provider.dart';
@@ -35,156 +34,86 @@ class HomeScreen extends StatelessWidget {
         ),
         children: [
           //Anonymous Route
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(
-                  color: Colors.grey,
+          menuButton(
+            context,
+            name: 'Anonymous Route',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AboutScreen(title: 'About Screen'),
                 ),
-              ),
-              title: Text('Anonymous Route'),
-              trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutScreen(title: 'About Screen'),
-                  ),
-                );
-              },
-            ),
+              );
+            },
           ),
 
           // Named Route
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(
-                  color: Colors.grey,
-                ),
-              ),
-              title: Text('Named Route'),
-              trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () {
-                Navigator.pushNamed(context, '/about');
-              },
-            ),
+          menuButton(
+            context,
+            name: 'Named Route',
+            onTap: () {
+              Navigator.pushNamed(context, '/about');
+            },
           ),
 
           // Emoji Generator
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(
-                  color: Colors.grey,
-                ),
-              ),
-              title: Text('Emoji Generator'),
-              trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/emojiGenerator',
-                  arguments: {
-                    'length': 3,
-                  },
-                );
-              },
-            ),
+          menuButton(
+            context,
+            name: 'Emoji Generator',
+            onTap: () {
+              Navigator.pushNamed(context, '/emojiGenerator', arguments: {
+                'length': 3,
+              });
+            },
           ),
 
           // Counter App with Provider
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(
-                  color: Colors.grey,
-                ),
-              ),
-              title: Text('Counter App with Provider'),
-              trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CounterScreen()),
-                );
-              },
-            ),
+          menuButton(
+            context,
+            name: 'Counter App with Provider',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CounterScreen()),
+              );
+            },
           ),
 
           // Counter App not using Provider
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(
-                  color: Colors.grey,
-                ),
-              ),
-              title: Text('Counter App without Provider'),
-              trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CounterScreenWithoutProvider()),
-                );
-              },
-            ),
+          menuButton(
+            context,
+            name: 'Counter App without Provider',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CounterScreenWithoutProvider()),
+              );
+            },
           ),
 
           // Sushi App
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(
-                  color: Colors.grey,
-                ),
-              ),
-              title: Text('Sushi App'),
-              trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () async {
-                await SecureStorageModule().write(key: 'isSushiApp', value: 'true');
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                  (route) => false,
-                );
-              },
-            ),
+          menuButton(
+            context,
+            name: 'Sushi App',
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                (route) => false,
+              );
+            },
           ),
 
           // Fetch API
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(
-                  color: Colors.grey,
-                ),
-              ),
-              title: Text('Fetch API'),
-              trailing: Icon(CupertinoIcons.arrow_right),
-              onTap: () async {
-                await SecureStorageModule().write(key: 'isSushiApp', value: 'true');
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => FetchAPIScreen()),
-                  (route) => false,
-                );
-              },
-            ),
+          menuButton(
+            context,
+            name: 'Fetch API',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FetchAPIScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -213,6 +142,27 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  menuButton(
+    BuildContext context, {
+    required String name,
+    Function()? onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15.0),
+      child: ListTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: Colors.grey,
+          ),
+        ),
+        title: Text(name),
+        trailing: Icon(CupertinoIcons.arrow_right),
+        onTap: onTap,
       ),
     );
   }

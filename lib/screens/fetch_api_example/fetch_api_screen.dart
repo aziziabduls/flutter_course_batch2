@@ -83,13 +83,11 @@ class _FetchAPIScreenState extends State<FetchAPIScreen> {
             title: const Text(
               'Categories',
               style: TextStyle(
-                color: Colors.white,
                 fontFamily: 'Urbanist',
-                fontSize: 30,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            backgroundColor: Colors.brown,
           ),
           body: value.isLoading
               // ? shimmerListTile()
@@ -109,10 +107,12 @@ class _FetchAPIScreenState extends State<FetchAPIScreen> {
                   ),
                 )
               : value.errorMessage != null
-                  ? Padding(
+                  ? Container(
+                      width: MediaQuery.sizeOf(context).width,
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(
                             CupertinoIcons.exclamationmark_triangle,
@@ -219,9 +219,10 @@ class _FetchAPIScreenState extends State<FetchAPIScreen> {
                         },
                       ),
                     ),
-          floatingActionButton: value.errorMessage != null
+          floatingActionButton: value.errorMessage != null || value.isLoading == true
               ? null
               : FloatingActionButton(
+                  backgroundColor: Colors.yellow,
                   onPressed: createNewCategories,
                   child: const Icon(Icons.add),
                 ),
