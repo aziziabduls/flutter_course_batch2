@@ -35,13 +35,15 @@ class _AccountScreenState extends State<AccountScreen> {
           CupertinoButton(
             child: Text('Logout'),
             onPressed: () async {
-              await SecureStorageModule().write(key: 'isSushiApp', value: 'false');
-              Navigator.pushAndRemoveUntil(
-                // ignore: use_build_context_synchronously
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-                (route) => false,
-              );
+              await SecureStorageModule().write(key: 'isSushiApp', value: 'false').then((value) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  (route) => false,
+                );
+              });
+              String isSushiApp = await SecureStorageModule().read(key: 'isSushiApp') ?? 'false';
+              debugPrint('>>> hasil : $isSushiApp');
             },
           ),
         ],

@@ -14,15 +14,15 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Future<void> getData() async {
-    String isSushiApp = await SecureStorageModule().read(key: 'isSushiApp') ?? '';
+    String isSushiApp = await SecureStorageModule().read(key: 'isSushiApp') ?? 'false';
     debugPrint('>>> hasil : $isSushiApp');
-    if (isSushiApp == 'true') {
+    if (isSushiApp.toString() == 'true') {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => WelcomeScreen()),
         (route) => false,
       );
-    } else {
+    } else if (isSushiApp.toString() == 'false') {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -33,7 +33,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _getDataStorage() async {
     try {
-      getData();
+      // getData();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (route) => false,
+      );
     } catch (e) {
       debugPrint(e.toString());
     }

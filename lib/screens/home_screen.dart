@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_course_batch_2/module/secure_storage_module.dart';
 import 'package:flutter_course_batch_2/screens/about_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen_without_provider.dart';
+import 'package:flutter_course_batch_2/screens/fetch_api_example/fetch_api_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/welcome_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -153,9 +156,31 @@ class HomeScreen extends StatelessWidget {
               onTap: () async {
                 await SecureStorageModule().write(key: 'isSushiApp', value: 'true');
                 Navigator.pushAndRemoveUntil(
-                  // ignore: use_build_context_synchronously
                   context,
                   MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                  (route) => false,
+                );
+              },
+            ),
+          ),
+
+          // Fetch API
+          Padding(
+            padding: const EdgeInsets.only(bottom: 15.0),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(
+                  color: Colors.grey,
+                ),
+              ),
+              title: Text('Fetch API'),
+              trailing: Icon(CupertinoIcons.arrow_right),
+              onTap: () async {
+                await SecureStorageModule().write(key: 'isSushiApp', value: 'true');
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => FetchAPIScreen()),
                   (route) => false,
                 );
               },
