@@ -37,13 +37,15 @@ class _AccountScreenState extends State<AccountScreen> {
             borderRadius: BorderRadius.circular(30),
             child: Text('Logout'),
             onPressed: () async {
-              await SecureStorageModule().write(key: 'isSushiApp', value: 'false').then((value) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                  (route) => false,
-                );
-              });
+              await SecureStorageModule().write(key: 'isSushiApp', value: 'false').then(
+                (value) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    (route) => false,
+                  );
+                },
+              );
               String isSushiApp = await SecureStorageModule().read(key: 'isSushiApp') ?? 'false';
               debugPrint('>>> hasil : $isSushiApp');
             },

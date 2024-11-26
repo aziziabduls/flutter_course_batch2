@@ -2,10 +2,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_course_batch_2/module/secure_storage_module.dart';
 import 'package:flutter_course_batch_2/screens/about_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen_without_provider.dart';
-import 'package:flutter_course_batch_2/screens/fetch_api_example/fetch_api_screen.dart';
+import 'package:flutter_course_batch_2/screens/product/product_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/welcome_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -95,11 +96,15 @@ class HomeScreen extends StatelessWidget {
           menuButton(
             context,
             name: 'Sushi App',
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                (route) => false,
+            onTap: () async {
+              await SecureStorageModule().write(key: 'isSushiApp', value: 'true').then(
+                (value) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                    (route) => false,
+                  );
+                },
               );
             },
           ),
@@ -111,37 +116,41 @@ class HomeScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FetchAPIScreen()),
+                MaterialPageRoute(builder: (context) => ProductScreen()),
               );
             },
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        color: Colors.transparent,
-        padding: EdgeInsets.symmetric(vertical: 10),
-        child: Wrap(
-          children: const [
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Build With Flutter',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                    ),
+      bottomNavigationBar: footerWidget(),
+    );
+  }
+
+  footerWidget() {
+    return Container(
+      color: Colors.transparent,
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Wrap(
+        children: const [
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Build With Flutter',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
                   ),
-                  SizedBox(width: 6),
-                  FlutterLogo(
-                    size: 20,
-                  ),
-                ],
-              ),
+                ),
+                SizedBox(width: 6),
+                FlutterLogo(
+                  size: 20,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
