@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_course_batch_2/provider/cart_provider.dart';
 import 'package:flutter_course_batch_2/provider/counter_provider.dart';
+import 'package:flutter_course_batch_2/provider/fav_place_provider.dart';
 import 'package:flutter_course_batch_2/screens/about_screen.dart';
 import 'package:flutter_course_batch_2/screens/emoji_generator.dart';
 import 'package:flutter_course_batch_2/screens/splash_screen.dart';
@@ -17,6 +18,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => CounterProvider()),
         ChangeNotifierProvider(create: (_) => ServiceProvider()),
+        ChangeNotifierProvider(create: (_) => FavPlaceProvider()),
       ],
       child: MyApp(),
     ),

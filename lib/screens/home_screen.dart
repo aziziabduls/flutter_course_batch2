@@ -6,6 +6,7 @@ import 'package:flutter_course_batch_2/module/secure_storage_module.dart';
 import 'package:flutter_course_batch_2/screens/about_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen.dart';
 import 'package:flutter_course_batch_2/screens/counter_screen_without_provider.dart';
+import 'package:flutter_course_batch_2/screens/fav_place/fav_place_screen.dart';
 import 'package:flutter_course_batch_2/screens/product/product_screen.dart';
 import 'package:flutter_course_batch_2/screens/sushi_app/welcome_screen.dart';
 
@@ -117,6 +118,18 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProductScreen()),
+              );
+            },
+          ),
+
+          // Favorite Place
+          menuButton(
+            context,
+            name: 'Favorite Place',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavPlaceScreen()),
               );
             },
           ),
